@@ -179,38 +179,11 @@ dbutils.fs.ls(table_location)
 
 # MAGIC %md
 # MAGIC 
-# MAGIC It is a bit hard to read - what if we push dbutils results data to the DataFrame? We can create a python function to do this so we can use it again in the future.
+# MAGIC It is a bit hard to read - let's using the inbuilt display function to format the results
 
 # COMMAND ----------
 
-def show_files_as_dataframe(files_location):
-
-  from pyspark.sql.types import ArrayType, StructField, StructType, StringType, IntegerType, LongType, TimestampType
-  from pyspark.sql import functions as F
-
-  # Assign dbutils output to a variable
-  dbutils_output = dbutils.fs.ls(files_location)
-
-  # Convert output to RDD
-  rdd = spark.sparkContext.parallelize(dbutils_output)
-
-  # Create a schema for this dataframe
-  schema = StructType([
-      StructField('path', StringType(), True),
-      StructField('name', StringType(), True),
-      StructField('size', IntegerType(), True),
-      StructField('modificationTime', LongType(), True)
-  ])
-
-  # Create data frame
-  files_df = spark.createDataFrame(rdd,schema).withColumn(
-    "modificationTime", 
-    (F.col("modificationTime")/1000).cast(TimestampType())
-  )
-  return files_df
-
-# Call our new function to see current files
-show_files_as_dataframe(table_location).display()
+display(dbutils.fs.ls(table_location))
 
 # COMMAND ----------
 
@@ -235,7 +208,7 @@ show_files_as_dataframe(table_location).display()
 
 log_files_location = f"{table_location}/_delta_log/"
 
-show_files_as_dataframe(log_files_location).display()
+display(dbutils.fs.ls(log_files_location))
 
 # COMMAND ----------
 
@@ -323,11 +296,11 @@ dbutils.fs.head(first_log_file_location)
 
 # COMMAND ----------
 
-show_files_as_dataframe(table_location + "/_delta_log/").display();
+display(dbutils.fs.ls(table_location + "/_delta_log/"))
 
 # COMMAND ----------
 
-show_files_as_dataframe(table_location).display();
+display(dbutils.fs.ls(table_location))
 
 # COMMAND ----------
 
