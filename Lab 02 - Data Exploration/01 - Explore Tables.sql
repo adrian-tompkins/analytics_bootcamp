@@ -184,3 +184,23 @@ group by
 -- MAGIC import plotly.express as px
 -- MAGIC fig = px.pie(df, values='country_cnt', names='country_code')
 -- MAGIC fig
+
+-- COMMAND ----------
+
+-- MAGIC %python
+-- MAGIC 
+-- MAGIC import pandas as pd
+-- MAGIC df = spark.read.table('orders_master').pandas_api()
+-- MAGIC 
+-- MAGIC df = df[(df.order_source == "ONLINE") & (df.order_state == "PENDING")]
+-- MAGIC df = df.groupby(['country_code']).agg(country_cnt=('cnt', 'sum')).reset_index()
+-- MAGIC 
+-- MAGIC df
+
+-- COMMAND ----------
+
+-- MAGIC %python
+-- MAGIC 
+-- MAGIC import plotly.express as px
+-- MAGIC fig = px.pie(df.to_pandas(), values='country_cnt', names='country_code')
+-- MAGIC fig
