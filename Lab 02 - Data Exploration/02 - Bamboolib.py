@@ -95,7 +95,7 @@ bam
 
 # COMMAND ----------
 
-dim_store_locations
+df_orders_master
 
 # COMMAND ----------
 
