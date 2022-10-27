@@ -57,3 +57,8 @@ df_country_count = df_orders_master.groupby(['country_code']).agg(cnt=('cnt', 's
 import plotly.express as px
 fig = px.pie(df_country_count, values='cnt', names='country_code')
 fig
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC Now see what happens when we push to repo
