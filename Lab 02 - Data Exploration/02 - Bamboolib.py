@@ -1,5 +1,13 @@
 # Databricks notebook source
-# MAGIC %md ##Install bamboolib
+# MAGIC %md 
+# MAGIC # Bamboolib
+# MAGIC Bamboolib is an interactive code genration tool, that makes it easier to explore and wrangle data. You don't need to be an expert in python, pandas or plotly to get started. It also provides a great way to learn how to write code to do the analysis for you; build enough transformations in Bamboolib and you'll get the hang of it!
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Install Bamboolib Library
+# MAGIC To start using bamboolib, first we need to install the library using the below command.
 
 # COMMAND ----------
 
@@ -7,11 +15,17 @@
 
 # COMMAND ----------
 
+# there's an underlying optimisation that was causing some problems when transitioning to toPandas()
+# we'll disable this optimisation for now
 spark.conf.set("spark.sql.execution.arrow.pyspark.enabled", False)
 
 # COMMAND ----------
 
-# MAGIC %md ##Use bamboolib by itself
+# MAGIC %md
+# MAGIC ## Task 1: Build a Dataframe
+# MAGIC We can now start bamboolib by running the below commands.
+# MAGIC 
+# MAGIC Use bamboolib to get the `dim_store_locations` table and load it into a dataframe called df_store_locations, with no limits on how many rows it brings back.
 
 # COMMAND ----------
 
@@ -20,9 +34,44 @@ bam
 
 # COMMAND ----------
 
-import pandas as pd; import numpy as np
-df_store_locations = spark.table("spark_catalog.apjuice.dim_store_locations").toPandas()
+# MAGIC %md
+# MAGIC Paste the generate code below and run the cell:
 
+# COMMAND ----------
+
+# paste code to fetch the dim_store_locations here
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Task 2: Build the "Orders Master" Dataframe
+# MAGIC 
+# MAGIC Now use the Bamboolib UI to rebuild the Orders Master dataframe, `df_orders_master`, with no limits on how many rows it brings back when getting the `apj_sales_fact` table.
+# MAGIC 
+# MAGIC You will need to use join, group, select, and rename trasformations to do this.
+# MAGIC 
+# MAGIC For reference this query the we will be rebuilding
+# MAGIC 
+# MAGIC ```
+# MAGIC select
+# MAGIC   a.store_id,
+# MAGIC   a.order_source,
+# MAGIC   a.order_state,
+# MAGIC   b.city,
+# MAGIC   b.country_code,
+# MAGIC   b.name as store_name,
+# MAGIC   count(*) as cnt
+# MAGIC from
+# MAGIC   apjuice.apj_sales_fact a
+# MAGIC   join apjuice.dim_store_locations b on a.slocation_skey = b.slocation_skey
+# MAGIC group by
+# MAGIC   a.store_id,
+# MAGIC   a.order_source,
+# MAGIC   a.order_state,
+# MAGIC   b.city,
+# MAGIC   b.country_code,
+# MAGIC   b.name
+# MAGIC ```
 
 # COMMAND ----------
 
@@ -30,35 +79,29 @@ bam
 
 # COMMAND ----------
 
-import pandas as pd; import numpy as np
-df = spark.table("spark_catalog.apjuice.apj_sales_fact").toPandas()
-# Step: Inner Join with df_store_locations where slocation_skey=slocation_skey
-df_orders_master = pd.merge(df, df_store_locations, how='inner', on=['slocation_skey'])
-
-# Step: Group by and aggregate
-df_orders_master = df_orders_master.groupby(['store_id', 'order_source', 'order_state', 'city', 'country_code', 'name']).agg({col: ['size'] for col in df_orders_master.columns})
-df_orders_master.columns = ['_'.join(multi_index) for multi_index in df_orders_master.columns.ravel()]
-df_orders_master = df_orders_master.reset_index()
-
-# Step: Select columns
-df_orders_master = df_orders_master[['store_id', 'order_source', 'order_state', 'city', 'country_code', 'name', 'store_id_size']]
-
-# Step: Rename multiple columns
-df_orders_master = df_orders_master.rename(columns={'name': 'store_name', 'store_id_size': 'cnt'})
-
-df_orders_master
+# MAGIC %md
+# MAGIC Paste the generate code below and run the cell:
 
 # COMMAND ----------
 
-import pandas as pd; import numpy as np
-# Step: Group by country_code and calculate new column(s)
-df_country_count = df_orders_master.groupby(['country_code']).agg(cnt=('cnt', 'sum')).reset_index()
-
-import plotly.express as px
-fig = px.pie(df_country_count, values='cnt', names='country_code')
-fig
+# paste code to build the df_orders_master dataframe is here
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC Now see what happens when we push to repo
+# MAGIC ## Task 3: Plot "Orders by Country"
+# MAGIC 
+# MAGIC Further transform the `df_orders_master` data frame by grouping on the country code and summing the cnt field. Then plot the result in a pie chart.
+
+# COMMAND ----------
+
+dim_store_locations
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC Paste the code to get the country count, then the code to generate the plot in the cell below
+
+# COMMAND ----------
+
+# paste the transformation and plotting code here

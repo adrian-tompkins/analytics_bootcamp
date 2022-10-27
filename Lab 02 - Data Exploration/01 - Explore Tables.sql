@@ -40,11 +40,11 @@ describe table extended apjuice.apj_sales_fact
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC Now lets see what files make up this table. The below command will list out and display these.
+-- MAGIC Now lets see what files make up this table. Copy and paste the location in the command below to list and display the files.
 
 -- COMMAND ----------
 
--- MAGIC %fs ls dbfs:/user/hive/warehouse/apjuice.db/apj_sales_fact
+-- MAGIC %fs ls <paste location here>
 
 -- COMMAND ----------
 
